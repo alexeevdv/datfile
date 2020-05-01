@@ -1,7 +1,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2012-2018 Falltergeist Developers
+# Copyright (c) 2012-2020 Falltergeist Developers
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,8 @@
 
 project(dat-unpacker)
 
-add_definitions (-std=c++11 -Wall)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(ZLIB REQUIRED)
 if(NOT ZLIB_FOUND)
@@ -32,9 +33,32 @@ if(NOT ZLIB_FOUND)
 endif(NOT ZLIB_FOUND)
 include_directories(${ZLIB_INCLUDE_DIRS})
 
-cmake_minimum_required(VERSION 2.8)
-aux_source_directory(src SRC_LIST)
+cmake_minimum_required(VERSION 3.10)
+
 set(CMAKE_BUILD_TYPE Debug)
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_executable(${PROJECT_NAME}
+    src/Arguments.h
+    src/ArgumentsChecker.cpp
+    src/ArgumentsChecker.h
+    src/ArgumentsParser.cpp
+    src/ArgumentsParser.h
+    src/DatFile.cpp
+    src/DatFile.h
+    src/DatFileItem.cpp
+    src/DatFileItem.h
+    src/DatFileUnpacker.cpp
+    src/DatFileUnpacker.h
+    src/Exception.cpp
+    src/Exception.h
+    src/Format.h
+    src/LZSS.cpp
+    src/LZSS.h
+    src/main.cpp
+)
+if(MSVC) 
+	target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+else()
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+endif()
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARIES})
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
